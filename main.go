@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
+const maxUploadSize = 1024 * 1024 // 1MB
 
 // Progress is used to track the progress of a file upload.
 // It implements the io.Writer interface so it can be passed
@@ -58,6 +59,10 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "index.html")
 }
 
+func authHandler(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "hello, world\n")
+}
+
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("method is: ", r.Method)
 	if r.Method != "POST" {
@@ -77,7 +82,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, fileHeader := range files {
 		log.Debug("uploading file ", fileHeader.Filename)
-		if fileHeader.Size > MAX_UPLOAD_SIZE {
+		if fileHeader.Size > maxUploadSize {
 			http.Error(w, fmt.Sprintf("The uploaded image is too big: %s. Please use an image less than 1MB in size", fileHeader.Filename), http.StatusBadRequest)
 			return
 		}
@@ -135,17 +140,30 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-	}
 
-	fmt.Fprintf(w, "Upload successful")
+		fmt.Fprintf(w, "Upload successful")
+	}
 }
 
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", IndexHandler)
-	mux.HandleFunc("/upload", uploadHandler)
+// func main() {
+// 	mux := http.NewServeMux()
+// 	mux.HandleFunc("/", IndexHandler)
+// 	mux.HandleFunc("/upload", uploadHandler)
 
-	if err := http.ListenAndServe(":4500", mux); err != nil {
+// 	if err := http.ListenAndServe(":4500", mux); err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
+// use gorilla mux for serve http
+func main() {
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", IndexHandler).Methods("GET")
+	r.HandleFunc("/upload", uploadHandler).Methods("POST")
+	r.HandleFunc("/auth", BasicAuth(authHandler))
+
+	if err := http.ListenAndServe(":4500", r); err != nil {
 		log.Fatal(err)
 	}
 }
