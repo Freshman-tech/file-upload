@@ -58,11 +58,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/html")
 	http.ServeFile(w, r, "index.html")
 }
-
-func authHandler(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "hello, world\n")
-}
-
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("method is: ", r.Method)
 	if r.Method != "POST" {
@@ -143,6 +138,10 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintf(w, "Upload successful")
 	}
+}
+
+func authHandler(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "hello, world\n")
 }
 
 // func main() {
