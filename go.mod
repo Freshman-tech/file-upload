@@ -1,4 +1,4 @@
-module github.com/freshman-tech/file-upload
+module github.com/dadez/file-upload
 
 go 1.15
 
