@@ -3,6 +3,8 @@ github.com/gabriel-vasile/mimetype v1.1.2 h1:gaPnPcNor5aZSVCJVSGipcpbgMWiAAj9z18
 github.com/gabriel-vasile/mimetype v1.1.2/go.mod h1:6CDPel/o/3/s4+bp6kIbsWATq8pmgOisOPG40CJa6To=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/grantae/certinfo v0.0.0-20170412194111-59d56a35515b h1:NGgE5ELokSf2tZ/bydyDUKrvd/jP8lrAoPNeBuMOTOk=
+github.com/grantae/certinfo v0.0.0-20170412194111-59d56a35515b/go.mod h1:zT/uzhdQGTqlwTq7Lpbj3JoJQWfPfIJ1tE0OidAmih8=
 github.com/h2non/filetype v1.1.0 h1:Or/gjocJrJRNK/Cri/TDEKFjAR+cfG6eK65NGYB6gBA=
 github.com/h2non/filetype v1.1.0/go.mod h1:319b3zT68BvV+WRj7cwy856M2ehB3HqNOt6sy1HndBY=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

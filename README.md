@@ -5,28 +5,36 @@ tutorial](https://freshman.tech/file-upload-golang/). Clone this repo to your
 computer and run `go run main.go` to start the server on PORT 4500.
 
 
+# Goal
+
+The purpose of this program is to be able to upload certificate files in a PEM format for later use as sidecar container together with https://github.com/joe-elliott/cert-exporter
+
+
 # Usage
 
-## curl
-
-uploading images works well with curl
-```bash
-curl -X POST -F "type=file" -F "file=@/path/to/file.png" http://localhost:4500/upload
-```
-
-uploading pdf files not, even setting the type in path to file
-```bash
-curl -X POST -F "type=file" -F "file=@/path/to/file.pdf;type=application/pdf" http://localhost:4500/upload
-```
-the file is seen as plain text `level=debug msg="File type is: text/plain; charset=utf-8"
-`
-what does the browser doing different as curl ?
-
-
-# Auth
-
-## dummy auth implemented for /auth, see auth.go
+## start locally
 
 ```bash
-curl -u test:test localhost:4500/auth
+cd src # move to directory containg go files
+export STATIC_FILES_PATH="../static" # tell where the credentials files and index.html are stored, fallback to '.' if not defined
+export UPLOADS_DIRECTORY_PATH="../uploads" # tell where the uploaded files should be stored, fallback to 'uploads' if not defined
+
+# run application
+go run main.go auth.go
 ```
+
+you should see the following output: `fileupload server ready`
+
+
+## Upload a cerfificate with curl
+
+| using test credentials  
+| On production (kubernetes), this files should be overriden
+
+```bash
+curl -X POST -u user:secret -F file=@/path/to/file.pem http://localhost:4500/upload
+```
+
+## Upload mulitples files with curl
+
+just repeat the `-F file=@/path/to/file.pem` part in your command

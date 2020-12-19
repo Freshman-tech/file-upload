@@ -10,16 +10,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type handler func(w http.ResponseWriter, r *http.Request)
+// Handler defines the incomming request
+type Handler func(w http.ResponseWriter, r *http.Request)
 
 // BasicAuth setting auth for desired routes
-func BasicAuth(pass handler) handler {
+func BasicAuth(pass Handler) Handler {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
 
 		if len(auth) != 2 || auth[0] != "Basic" {
+			log.Error("Failed authorization access, no credentials provided")
 			http.Error(w, "authorization failed", http.StatusUnauthorized)
 			return
 		}
@@ -29,6 +31,7 @@ func BasicAuth(pass handler) handler {
 
 		//if len(pair) != 2 || !validate(pair[0], pair[1]) {
 		if len(pair) != 2 || !validateFromFile(pair[0], pair[1]) {
+			log.Error("Failed authorization access, username and or password missmatch")
 			http.Error(w, "authorization failed", http.StatusUnauthorized)
 			return
 		}
@@ -37,6 +40,7 @@ func BasicAuth(pass handler) handler {
 	}
 }
 
+// only for testing purposes, should not be used in production
 func validate(username, password string) bool {
 	if username == "test" && password == "test" {
 		return true
@@ -44,9 +48,14 @@ func validate(username, password string) bool {
 	return false
 }
 
+// username and password should be defined in files
+// on kubernetes this files will be mounted from a secret file
 func validateFromFile(username, password string) bool {
+	// // check for credentials files path
+	// staticFilesPath := GetEnv("STATIC_FILES_PATH", ".") + "/"
+
 	// get username from file
-	user, err := os.Open("username")
+	user, err := os.Open(staticFilesPath + "username")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +68,7 @@ func validateFromFile(username, password string) bool {
 	u, err := ioutil.ReadAll(user)
 
 	// get password from file
-	pass, err := os.Open("password")
+	pass, err := os.Open(staticFilesPath + "password")
 	if err != nil {
 		log.Fatal(err)
 	}
