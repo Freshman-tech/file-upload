@@ -15,6 +15,7 @@ The purpose of this program is to be able to upload certificate files in a PEM f
 ## start locally
 
 ```bash
+cd file-upload # move directory to this project
 cd src # move to directory containg go files
 export STATIC_FILES_PATH="../static" # tell where the credentials files and index.html are stored, fallback to '.' if not defined
 export UPLOADS_DIRECTORY_PATH="../uploads" # tell where the uploaded files should be stored, fallback to 'uploads' if not defined
@@ -32,7 +33,8 @@ you should see the following output: `fileupload server ready`
 | On production (kubernetes), this files should be overriden
 
 ```bash
-curl -X POST -u user:secret -F file=@/path/to/file.pem http://localhost:4500/upload
+cd file-upload # move directory to this project
+curl -X POST -u user:secret -F file=@test/github.crt.pem http://localhost:4500/upload
 ```
 
 ## Upload mulitples files with curl
