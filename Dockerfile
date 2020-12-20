@@ -22,4 +22,4 @@ COPY --from=0 /build/fileserver .
 ADD static .
 
 # executable
-CMD ["./app/fileserver"]
+CMD ["/app/fileserver"]
