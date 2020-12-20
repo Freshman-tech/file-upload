@@ -51,11 +51,8 @@ func validate(username, password string) bool {
 // username and password should be defined in files
 // on kubernetes this files will be mounted from a secret file
 func validateFromFile(username, password string) bool {
-	// // check for credentials files path
-	// staticFilesPath := GetEnv("STATIC_FILES_PATH", ".") + "/"
-
 	// get username from file
-	user, err := os.Open(staticFilesPath + "username")
+	user, err := os.Open(authFilesPath + "username")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,9 +63,10 @@ func validateFromFile(username, password string) bool {
 	}()
 
 	u, err := ioutil.ReadAll(user)
+	log.Debug("username is: ", string(u))
 
 	// get password from file
-	pass, err := os.Open(staticFilesPath + "password")
+	pass, err := os.Open(authFilesPath + "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,6 +78,7 @@ func validateFromFile(username, password string) bool {
 
 	// check if username and password match
 	p, err := ioutil.ReadAll(pass)
+	log.Debug("password is: ", string(p))
 
 	if username == string(u) && password == string(p) {
 		log.Debug("login successfull")

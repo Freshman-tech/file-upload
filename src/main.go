@@ -12,6 +12,7 @@ const maxUploadSize = 1024 * 1024 // 1MB
 
 var (
 	staticFilesPath      string
+	authFilesPath        string
 	uploadsDirectoryPath string
 )
 
@@ -33,6 +34,8 @@ func init() {
 	// check for environment variables
 	// check for static files path
 	staticFilesPath = GetEnv("STATIC_FILES_PATH", ".") + "/"
+	// check for static files path
+	authFilesPath = GetEnv("AUTH_FILES_PATH", ".") + "/"
 	// check for uploads directory path
 	uploadsDirectoryPath = GetEnv("UPLOADS_DIRECTORY_PATH", "uploads")
 }
@@ -56,6 +59,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 // use gorilla mux for serve http
 func main() {
 	log.Info("fileupload server ready")
+	log.Debug("auth files under ", authFilesPath)
 	// run webserver
 	r := mux.NewRouter()
 

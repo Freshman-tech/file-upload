@@ -17,11 +17,12 @@ The purpose of this program is to be able to upload certificate files in a PEM f
 ```bash
 cd file-upload # move directory to this project
 cd src # move to directory containg go files
-export STATIC_FILES_PATH="../static" # tell where the credentials files and index.html are stored, fallback to '.' if not defined
+export STATIC_FILES_PATH="../static" # tell where the index.html is stored, fallback to '.' if not defined
+export AUTH_FILES_PATH="../static" # tell where the credentials files are stored, fallback to '.' if not defined
 export UPLOADS_DIRECTORY_PATH="../uploads" # tell where the uploaded files should be stored, fallback to 'uploads' if not defined
 
 # run application
-go run main.go auth.go
+go run main.go auth.go upload.go validatePEMFile.go
 ```
 
 you should see the following output: `fileupload server ready`
