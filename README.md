@@ -12,21 +12,39 @@ The purpose of this program is to be able to upload certificate files in a PEM f
 
 # Usage
 
+## configuration
+
+| environment variable | default value | description |
+|:--- | :---:| ---|
+| `STATIC_FILES_PATH` | `.` | where the index.html is stored |
+| `AUTH_FILES_PATH` | `.` | where the username and password files are stored |
+| `UPLOADS_DIRECTORY_PATH` | `uploads` |  where the uploaded files should be stored |
+| `LOG_LEVEL` | `info` | loglevel for applications logs, possible values are: `trace`, `debug`, `info`, `warn`, `error`, `fatal`, `panic` see https://github.com/sirupsen/logrus#level-logging
+
+
 ## start locally
 
 ```bash
 cd file-upload # move directory to this project
 cd src # move to directory containg go files
-export STATIC_FILES_PATH="../static" # tell where the index.html is stored, fallback to '.' if not defined
-export AUTH_FILES_PATH="../static" # tell where the credentials files are stored, fallback to '.' if not defined
-export UPLOADS_DIRECTORY_PATH="../uploads" # tell where the uploaded files should be stored, fallback to 'uploads' if not defined
+export STATIC_FILES_PATH="../static" # this folder contains the index.html file
+export AUTH_FILES_PATH="../static" # this folder contains credentials
+export UPLOADS_DIRECTORY_PATH="../uploads" # this folder is ignored by git
 
 # run application
-go run main.go auth.go upload.go validatePEMFile.go
+go run *.go
 ```
 
 you should see the following output: `fileupload server ready`
 
+## start as docker image
+
+```bash
+# normaly, no need for configuration, default values should work
+unset STATIC_FILES_PATH AUTH_FILES_PATH UPLOADS_DIRECTORY_PATH=
+
+docker run -p 4500:4500 file-upload:latest
+```
 
 ## Upload a cerfificate with curl
 
