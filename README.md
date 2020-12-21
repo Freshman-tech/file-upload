@@ -1,7 +1,6 @@
 # file-upload
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/dadez/file-upload)](https://goreportcard.com/report/github.com/dadez/file-upload) https://img.shields.io/badge/version-0.19-blue.svg?cacheSeconds=2592000
-
+[![Go Report Card](https://goreportcard.com/badge/github.com/dadez/file-upload)](https://goreportcard.com/report/github.com/dadez/file-upload) ![version](https://img.shields.io/badge/version-0.19-blue.svg?cacheSeconds=2592000)
 # Goal
 
 The purpose of this program is to be able to upload certificate files in a PEM format for later use as sidecar container together with https://github.com/dadez/cert-exporter
