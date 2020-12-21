@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
-	"time"
+	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -18,22 +18,44 @@ var (
 	staticFilesPath      string
 	authFilesPath        string
 	uploadsDirectoryPath string
+	logLevel             string
 )
 
-// configure logging
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	// log.SetFormatter(&log.JSONFormatter{})
-	log.SetFormatter(&log.TextFormatter{
+	// configure logging
+
+	//log.SetReportCaller(true)
+
+	formatter := &logrus.TextFormatter{
 		FullTimestamp: true,
-	})
+	}
+
+	log.SetFormatter(formatter)
 
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
 	log.SetOutput(os.Stdout)
 
-	// Only log the warning severity or above.
-	log.SetLevel(log.InfoLevel)
+	// configure log level, default to info
+	logLevel = GetEnv("LOG_LEVEL", "info")
+	lvl := strings.ToLower(logLevel)
+
+	switch lvl {
+	case "trace":
+		log.SetLevel(log.TraceLevel)
+	case "debug":
+		log.SetLevel(log.DebugLevel)
+	case "info":
+		log.SetLevel(log.InfoLevel)
+	case "warn":
+		log.SetLevel(log.WarnLevel)
+	case "error":
+		log.SetLevel(log.ErrorLevel)
+	case "fatal":
+		log.SetLevel(log.FatalLevel)
+	case "panic":
+		log.SetLevel(log.PanicLevel)
+	}
 
 	// check for environment variables
 	// check for static files path
@@ -51,28 +73,6 @@ func GetEnv(key, fallback string) string {
 		value = fallback
 	}
 	return value
-}
-
-// web ui Handler serves the index.html file
-func uiHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/html")
-	http.ServeFile(w, r, staticFilesPath+"index.html")
-	log.Debug("main page access")
-}
-
-// Healthz Handler for use in kubernetes
-func healthzHandler(w http.ResponseWriter, r *http.Request) {
-	started := time.Now()
-	duration := time.Since(started)
-	if duration.Seconds() > 10 {
-		w.WriteHeader(500)
-		w.Write([]byte(fmt.Sprintf("error: %v", duration.Seconds())))
-		log.Error("health check takes too long: ", duration.String())
-	} else {
-		w.WriteHeader(200)
-		w.Write([]byte("ok"))
-		log.Debug("healthz check tooks: ", duration.String())
-	}
 }
 
 // use gorilla mux for serve http
