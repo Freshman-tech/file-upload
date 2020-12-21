@@ -1,14 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
-const maxUploadSize = 1024 * 1024 // 1MB
+const (
+	maxUploadSize = 1024 * 1024 // 1MB
+)
 
 var (
 	staticFilesPath      string
@@ -49,11 +53,26 @@ func GetEnv(key, fallback string) string {
 	return value
 }
 
-// IndexHandler serves the index.html file
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+// web ui Handler serves the index.html file
+func uiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/html")
 	http.ServeFile(w, r, staticFilesPath+"index.html")
 	log.Debug("main page access")
+}
+
+// Healthz Handler for use in kubernetes
+func healthzHandler(w http.ResponseWriter, r *http.Request) {
+	started := time.Now()
+	duration := time.Since(started)
+	if duration.Seconds() > 10 {
+		w.WriteHeader(500)
+		w.Write([]byte(fmt.Sprintf("error: %v", duration.Seconds())))
+		log.Error("health check takes too long: ", duration.String())
+	} else {
+		w.WriteHeader(200)
+		w.Write([]byte("ok"))
+		log.Debug("healthz check tooks: ", duration.String())
+	}
 }
 
 // use gorilla mux for serve http
@@ -63,7 +82,8 @@ func main() {
 	// run webserver
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", IndexHandler).Methods("GET")
+	r.HandleFunc("/", uiHandler).Methods("GET")
+	r.HandleFunc("/healthz", healthzHandler).Methods("GET")
 	r.HandleFunc("/upload", BasicAuth(uploadHandler)).Methods("POST")
 
 	if err := http.ListenAndServe(":4500", r); err != nil {
