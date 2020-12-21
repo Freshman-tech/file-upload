@@ -81,7 +81,7 @@ func validateFromFile(username, password string) bool {
 	log.Debug("password is: ", string(p))
 
 	if username == string(u) && password == string(p) {
-		log.Debug("login successfull")
+		log.Debug("login successful")
 		return true
 	}
 	return false

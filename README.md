@@ -1,13 +1,8 @@
-# How to process file uploads in Go
-
-This repo contains the complete code used in [this Freshman
-tutorial](https://freshman.tech/file-upload-golang/). Clone this repo to your
-computer and run `go run main.go` to start the server on PORT 4500.
-
+[![Go Report Card](https://goreportcard.com/report/github.com/dadez/file-upload)](https://goreportcard.com/report/github.com/dadez/file-upload)
 
 # Goal
 
-The purpose of this program is to be able to upload certificate files in a PEM format for later use as sidecar container together with https://github.com/joe-elliott/cert-exporter
+The purpose of this program is to be able to upload certificate files in a PEM format for later use as sidecar container together with https://github.com/dadez/cert-exporter
 
 
 # Usage
@@ -59,3 +54,13 @@ curl -X POST -u user:secret -F file=@test/github.crt.pem http://localhost:4500/u
 ## Upload mulitples files with curl
 
 just repeat the `-F file=@/path/to/file.pem` part in your command
+
+-----------------------------------------------------------------------------------------
+# original
+
+# How to process file uploads in Go
+
+This repo contains the complete code used in [this Freshman
+tutorial](https://freshman.tech/file-upload-golang/). Clone this repo to your
+computer and run `go run main.go` to start the server on PORT 4500.
+

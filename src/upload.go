@@ -98,9 +98,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		// certCN := Cert.Subject.CommonName
 		// certEndDate := Cert.NotAfter.String()
 
-		// upload successfull
+		// upload successful
 		fmt.Fprintf(w, "successfully uploaded %s\n", fileHeader.Filename)
-		// log.Info("Successfull upload of file [", fileHeader.Filename, "] from issuer [", CertIssuer, "]")
+		// log.Info("Successful upload of file [", fileHeader.Filename, "] from issuer [", CertIssuer, "]")
 		log.Info("Successfully uploaded file [", fileHeader.Filename, "]")
 		//log.Debug("  certificate Common Name: [", CertCN, "] certificate valid until: [", CertEndDate, "]")
 	}
