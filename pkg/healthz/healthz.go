@@ -1,4 +1,4 @@
-package main
+package healthz
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 // Healthz Handler for use in kubernetes
-func healthzHandler(w http.ResponseWriter, r *http.Request) {
+func HealthzHandler(w http.ResponseWriter, r *http.Request) {
 	started := time.Now()
 	duration := time.Since(started)
 	if duration.Seconds() > 10 {

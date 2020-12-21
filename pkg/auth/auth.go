@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"encoding/base64"
@@ -7,8 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dadez/file-upload/pkg/common"
 	log "github.com/sirupsen/logrus"
 )
+
+var authFilesPath string
 
 // Handler defines the incomming request
 type Handler func(w http.ResponseWriter, r *http.Request)
@@ -51,6 +54,9 @@ func validate(username, password string) bool {
 // username and password should be defined in files
 // on kubernetes this files will be mounted from a secret file
 func validateFromFile(username, password string) bool {
+	// check for static files path
+	authFilesPath = common.GetEnv("AUTH_FILES_PATH", "./test") + "/"
+
 	// get username from file
 	user, err := os.Open(authFilesPath + "username")
 	if err != nil {

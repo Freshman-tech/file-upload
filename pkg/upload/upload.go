@@ -1,4 +1,4 @@
-package main
+package upload
 
 import (
 	"fmt"
@@ -7,10 +7,17 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/dadez/file-upload/pkg/common"
+	"github.com/dadez/file-upload/pkg/validate"
 	log "github.com/sirupsen/logrus"
 )
 
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
+const (
+	maxUploadSize = 1024 * 1024 // 1MB
+)
+
+// UploadHandler manages the upload
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("method is: ", r.Method)
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -66,7 +73,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Debug("creating upload directory")
-		// uploadsDirectoryPath := GetEnv("UPLOADS_DIRECTORY_PATH", "uploads")
+		uploadsDirectoryPath := common.GetEnv("UPLOADS_DIRECTORY_PATH", "uploads")
+
 		err = os.MkdirAll(uploadsDirectoryPath, os.ModePerm)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -92,7 +100,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// validate the certificate
-		ValidatePEM(uploadsDirectoryPath + "/" + fileHeader.Filename)
+		validate.ValidatePEM(uploadsDirectoryPath + "/" + fileHeader.Filename)
 		// // is there a way to get this informations back from validatePEMF function ?
 		// certIssuer := Cert.Issuer
 		// certCN := Cert.Subject.CommonName
