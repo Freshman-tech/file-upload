@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ValidatePEM will check for pem file validity
+// ValidatePEM will check for pem file validity by decoding the certificate
 func ValidatePEM(f string) {
 	certFile := f
 	certPEM, err := ioutil.ReadFile(certFile)
