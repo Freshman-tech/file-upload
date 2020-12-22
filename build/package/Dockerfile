@@ -1,10 +1,13 @@
 FROM golang:1.14-alpine
 
 RUN mkdir /build
-ADD src/* /build/
+ADD cmd /build/cmd
+ADD pkg /build/pkg
+ADD go.mod /build/
 WORKDIR /build
+RUN ls -l
 RUN go mod download && \
-    CGO_ENABLED=0 GOOS=linux go build -a -o fileserver .
+    CGO_ENABLED=0 GOOS=linux go build -a -o fileserver ./cmd/app
 
 FROM alpine:3.12
 #FROM scratch
@@ -19,7 +22,8 @@ USER app
 COPY --from=0 /build/fileserver .
 
 # add static files
-ADD static .
+ADD web web
+ADD test test
 
 # executable
 CMD ["/app/fileserver"]

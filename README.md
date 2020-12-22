@@ -28,6 +28,13 @@ go run cmd/app/main.go
 
 you should see the following output: `fileupload server ready`
 
+## build docker imgae
+
+```bash
+cd file-upload # move directory to this project
+docker build -t file-upload:latest -f build/package/Dockerfile .
+```
+
 ## start as docker image
 
 ```bash
