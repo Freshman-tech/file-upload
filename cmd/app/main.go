@@ -62,8 +62,11 @@ func main() {
 	// run webserver
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", ui.UiHandler).Methods("GET")
+	//public
 	r.HandleFunc("/healthz", healthz.HealthzHandler).Methods("GET")
+
+	//private
+	r.HandleFunc("/", auth.BasicAuth(ui.WebHandler)).Methods("GET")
 	r.HandleFunc("/upload", auth.BasicAuth(upload.UploadHandler)).Methods("POST")
 
 	if err := http.ListenAndServe(":4500", r); err != nil {
