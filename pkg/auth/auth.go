@@ -21,6 +21,15 @@ func BasicAuth(pass Handler) Handler {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		// ask for credentials if the Authorization header parse fails
+		_, _, ok := r.BasicAuth()
+		if !ok {
+			w.Header().Add("WWW-Authenticate", `Basic realm="Give username and password"`)
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(`{"message": "No basic auth present"}`))
+			return
+		}
+
 		auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
 
 		if len(auth) != 2 || auth[0] != "Basic" {
