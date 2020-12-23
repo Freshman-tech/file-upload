@@ -1,0 +1,92 @@
+name: goreleaser
+
+on:
+  push:
+    # tags:
+    #   - "v*.*.*"
+    branches:
+      - '*'
+      - '!master'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dockers:
+    -
+      # GOOS of the built binary that should be used.
+      goos: linux
+
+      # GOARCH of the built binary that should be used.
+      goarch: amd64
+
+      # GOARM of the built binary that should be used.
+      goarm: ''
+
+      # Name templates of the built binaries that should be used.
+      binaries:
+      - fileupload
+
+      # Build IDs to gather the binaries from.
+      builds:
+      - mybuild
+
+      # Templates of the Docker image names.
+      image_templates:
+      - "dadez/file-upload:latest"
+      - "dadez/file-upload:{{ .Tag }}"
+      - "dadez/file-upload:v{{ .Major }}"
+      - "dadez/file-upload:v{{ .Major }}.{{ .Minor }}"
+      - "gcr.io/dadez/file-upload:latest"
+
+      # Skips the docker push. Could be useful if you also do draft releases.
+      # If set to auto, the release will not be pushed to the docker repository
+      # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
+      # Defaults to false.
+      skip_push: false
+
+      # Path to the Dockerfile (from the project root).
+      dockerfile: ./build/package/Dockerfile
+
+      # Template of the docker build flags.
+      build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      # - "--build-arg=FOO={{.Env.Bar}}"
+
+
+      # If your Dockerfile copies files other than the binary itself,
+      # you should list them here as well.
+      # Note that goreleaser will create the same structure inside the temporary
+      # folder, so if you add `foo/bar.json` here, on your Dockerfile you can
+      # `COPY foo/bar.json /whatever.json`.
+      # Also note that the paths here are relative to the folder in which
+      # goreleaser is being run.
+      # This field does not support wildcards, you can add an entire folder here
+      # and use wildcards when you `COPY`/`ADD` in your Dockerfile.
+      # extra_files:
+      # - config.yml
+
+

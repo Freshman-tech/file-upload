@@ -7,7 +7,7 @@ ADD go.mod /build/
 WORKDIR /build
 RUN ls -l
 RUN go mod download && \
-    CGO_ENABLED=0 GOOS=linux go build -a -o fileserver ./cmd/app
+    CGO_ENABLED=0 GOOS=linux go build -a -o fileupload ./cmd/app
 
 FROM alpine:3.12
 #FROM scratch
@@ -19,11 +19,11 @@ WORKDIR /app
 USER app
 
 # get builded app from previous stage
-COPY --from=0 /build/fileserver .
+COPY --from=0 /build/fileupload .
 
 # add static files
 ADD web web
 ADD test test
 
 # executable
-CMD ["/app/fileserver"]
+CMD ["/app/fileupload"]
