@@ -11,8 +11,9 @@ var (
 	staticFilesPath string
 )
 
-// UiHandler serves the index.html file
-func UiHandler(w http.ResponseWriter, r *http.Request) {
+// WebHandler serves the index.html file
+func WebHandler(w http.ResponseWriter, r *http.Request) {
+
 	// check for static files path
 	staticFilesPath = common.GetEnv("STATIC_FILES_PATH", "./web") + "/"
 	w.Header().Add("Content-Type", "text/html")
